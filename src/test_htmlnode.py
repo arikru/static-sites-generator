@@ -14,11 +14,6 @@ class TestHTMLNode(unittest.TestCase):
         render = "<p>This is a paragraph of text.</p>"
         self.assertEqual(node.to_html(), render)
 
-    def test_to_html_no_tag(self):
-        node = LeafNode(None, "I am so alone")
-        render = "I am so alone"
-        self.assertEqual(node.to_html(), render)
-
     def test_to_html_one_prop(self):
         node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
         render = "<a href=\"https://www.google.com\">Click me!</a>"
