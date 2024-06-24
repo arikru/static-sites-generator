@@ -51,5 +51,14 @@ def split_nodes_image(old_nodes):
 
     for node in old_nodes:
         if node.text_type == text_type_text:
-            md_image = extract_markdown_images(node.text)
-            split_parts = node.text.split(md_image, 1)
+            images = extract_markdown_images(node.text)
+            if not images:
+                new_nodes.append(node)
+                continue
+
+            for image_tup in images:
+                split_parts = node.text.split(f"![{image_tup[0]}]({image_tup[1]})",1)
+                new_nodes.append(TextNode(split_parts[0], text_type_text))
+                new_nodes.append(TextNode(image_tup[0], text_type_image, image_tup[1]))
+
+    return new_nodes
