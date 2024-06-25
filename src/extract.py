@@ -55,10 +55,57 @@ def split_nodes_image(old_nodes):
             if not images:
                 new_nodes.append(node)
                 continue
+            
+            text = node.text
 
             for image_tup in images:
-                split_parts = node.text.split(f"![{image_tup[0]}]({image_tup[1]})",1)
-                new_nodes.append(TextNode(split_parts[0], text_type_text))
-                new_nodes.append(TextNode(image_tup[0], text_type_image, image_tup[1]))
+                split_parts = text.split(f"![{image_tup[0]}]({image_tup[1]})",1)
+                if len(split_parts) != 2:
+                    raise ValueError("Invalid markdown, image section not closed")
+                if split_parts[0] != "":
+                    new_nodes.append(TextNode(split_parts[0], text_type_text))
+                
+                new_nodes.append(TextNode(
+                    image_tup[0], 
+                    text_type_image, 
+                    image_tup[1]))
+
+
+                text = split_parts[1]
+
+            if text != "":
+                new_nodes.append(TextNode(text, text_type_text))
+
+    return new_nodes
+
+def split_nodes_link(old_nodes):
+    new_nodes = []
+
+    for node in old_nodes:
+        if node.text_type == text_type_text:
+            links = extract_markdown_links(node.text)
+            if not links:
+                new_nodes.append(node)
+                continue
+            
+            text = node.text
+
+            for link_tup in links:
+                split_parts = text.split(f"[{link_tup[0]}]({link_tup[1]})",1)
+                if len(split_parts) != 2:
+                    raise ValueError("Invalid markdown, link section not closed")
+                if split_parts[0] != "":
+                    new_nodes.append(TextNode(split_parts[0], text_type_text))
+                
+                new_nodes.append(TextNode(
+                    link_tup[0], 
+                    text_type_link, 
+                    link_tup[1]))
+
+
+                text = split_parts[1]
+
+            if text != "":
+                new_nodes.append(TextNode(text, text_type_text))
 
     return new_nodes
