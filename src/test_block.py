@@ -11,7 +11,7 @@ from block import (
         block_type_ordered_list,
 )
 
-class TestInlineMarkdown(unittest.TestCase):
+class TestBlock(unittest.TestCase):
     def test_markdown_to_blocks_simple(self):
         md = """
 This is **bolded** paragraph
