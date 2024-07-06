@@ -59,3 +59,33 @@ This is the same paragraph on a new line
         expected = block_type_heading
         result = block_to_block_type(md)
         self.assertEqual(result, expected)
+
+    def test_block_to_block_type_code(self):
+        md = "```I am a code block```"
+        expected = block_type_code
+        result = block_to_block_type(md)
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_quote(self):
+        md = ">Line 1\n>Line 2"
+        expected = block_type_quote
+        result = block_to_block_type(md)
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_ul_star(self):
+        md = "* Line 1\n* Line 2"
+        expected = block_type_unordered_list
+        result = block_to_block_type(md)
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_ul_hyphen(self):
+        md = "- Line 1\n- Line 2"
+        expected = block_type_unordered_list
+        result = block_to_block_type(md)
+        self.assertEqual(result, expected)
+
+    def test_block_to_block_type_ol(self):
+        md = "1. Line 1\n2. Line 2"
+        expected = block_type_ordered_list
+        result = block_to_block_type(md)
+        self.assertEqual(result, expected)
