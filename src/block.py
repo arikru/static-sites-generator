@@ -9,10 +9,12 @@ block_type_quote = "quote"
 block_type_unordered_list = "unordered list"
 block_type_ordered_list = "ordered list"
 
+
 def markdown_to_blocks(markdown):
-        blank_line_regex = r"(?:\r?\n){2,}"
-        blocks= re.split(blank_line_regex, markdown.strip())
-        return list(filter(None, blocks))
+    blank_line_regex = r"(?:\r?\n){2,}"
+    blocks = re.split(blank_line_regex, markdown.strip())
+    return list(filter(None, blocks))
+
 
 def block_to_block_type(block):
     # Headings
@@ -73,14 +75,23 @@ def block_to_block_type(block):
 
     return block_type_paragraph
 
+
 def convert_paragraph_block(block):
     if block_to_block_type(block) == block_type_paragraph:
         return HTMLNode("<p>", block)
+
 
 def convert_quote_block(block):
     if block_to_block_type(block) == block_type_quote:
         return HTMLNode("<blockquote>", block[1:])
 
+
 def convert_code_block(block):
     if block_to_block_type(block) == block_type_code:
         return HTMLNode("<code>", block[3:-3])
+
+
+def convert_heading_block(block):
+    if block_to_block_type(block) == block_type_heading:
+        h_nr = len(block.split()[0])
+        return HTMLNode(f"<h{h_nr}>", block[h_nr:])

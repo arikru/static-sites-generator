@@ -2,18 +2,20 @@ import unittest
 from htmlnode import HTMLNode
 
 from block import (
-        block_to_block_type,
-        convert_code_block,
-        convert_quote_block,
-        markdown_to_blocks,
-        convert_paragraph_block,
-        block_type_paragraph,
-        block_type_heading,
-        block_type_code,
-        block_type_quote,
-        block_type_unordered_list,
-        block_type_ordered_list,
+    block_to_block_type,
+    convert_code_block,
+    convert_quote_block,
+    markdown_to_blocks,
+    convert_paragraph_block,
+    convert_heading_block,
+    block_type_paragraph,
+    block_type_heading,
+    block_type_code,
+    block_type_quote,
+    block_type_unordered_list,
+    block_type_ordered_list,
 )
+
 
 class TestBlock(unittest.TestCase):
     def test_markdown_to_blocks_simple(self):
@@ -51,7 +53,7 @@ This is the same paragraph on a new line
         expected = []
         result = markdown_to_blocks(md)
         self.assertListEqual(result, expected)
-        
+
     def test_block_to_block_type(self):
         md = "# I am a Heading"
         expected = block_type_heading
@@ -110,4 +112,16 @@ This is the same paragraph on a new line
         md = """```print('Hello World')```"""
         expected = HTMLNode("<code>", "print('Hello World')")
         result = convert_code_block(md)
+        self.assertEqual(result, expected)
+
+    def test_convert_heading_block_h1(self):
+        md = """# Heading 1"""
+        expected = HTMLNode("<h1>", " Heading 1")
+        result = convert_heading_block(md)
+        self.assertEqual(result, expected)
+
+    def test_convert_heading_block_h2(self):
+        md = """## Heading 2"""
+        expected = HTMLNode("<h2>", " Heading 2")
+        result = convert_heading_block(md)
         self.assertEqual(result, expected)
