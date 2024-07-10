@@ -13,9 +13,9 @@ class HTMLNode:
             return ""
         attributes = " "
 
-        for k,v in self.props.items():
+        for k, v in self.props.items():
             attributes += f'{k}=\"{v}\" '
-        
+
         return attributes.rstrip()
 
     def __repr__(self) -> str:
@@ -23,11 +23,12 @@ class HTMLNode:
 
     def __eq__(self, other: object, /) -> bool:
         return (
-                self.tag == other.tag
-                and self.value == other.value
-                and self.children == other.children
-                and self.props == other.props
+            self.tag == other.tag
+            and self.value == other.value
+            and self.children == other.children
+            and self.props == other.props
         )
+
 
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
@@ -42,6 +43,7 @@ class LeafNode(HTMLNode):
             return f'<{self.tag}>{self.value}</{self.tag}>'
         return f'<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>'
 
+
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
         super().__init__(tag, None, children, props)
@@ -50,7 +52,8 @@ class ParentNode(HTMLNode):
         if self.tag is None:
             raise ValueError("tag of ParentNode cannot be None value")
         if self.children is None:
-            raise ValueError("ParentNode cannot have no children (None provided)")
+            raise ValueError(
+                "ParentNode cannot have no children (None provided)")
 
         parsed_nodes = []
 

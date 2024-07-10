@@ -1,6 +1,6 @@
 import re
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, ParentNode
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
@@ -76,22 +76,55 @@ def block_to_block_type(block):
     return block_type_paragraph
 
 
+def markdown_to_html_node(markdown):
+    nodes = []
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        block_type = block_to_block_type(block)
+
+        if block_type == block_type_paragraph:
+            node = convert_paragraph_block(block)
+
+        if block_type == block_type_quote:
+            node = convert_quote_block(block)
+
+        if block_type == block_type_code:
+            node = convert_code_block(block)
+
+        if block_type == block_type_heading:
+            node = convert_heading_block(block)
+
+        if block_type == block_type_unordered_list:
+            node = convert_unordered_block(block)
+
+        if block_type == block_type_ordered_list:
+            node = convert_ordered_block(block)
+
+        nodes.append(node)
+
+    return ParentNode("div", nodes)
+
+
 def convert_paragraph_block(block):
-    if block_to_block_type(block) == block_type_paragraph:
-        return HTMLNode("<p>", block)
+    return HTMLNode("<p>", block)
 
 
 def convert_quote_block(block):
-    if block_to_block_type(block) == block_type_quote:
-        return HTMLNode("<blockquote>", block[1:])
+    return HTMLNode("<blockquote>", block[1:])
 
 
 def convert_code_block(block):
-    if block_to_block_type(block) == block_type_code:
-        return HTMLNode("<code>", block[3:-3])
+    return HTMLNode("<code>", block[3:-3])
 
 
 def convert_heading_block(block):
-    if block_to_block_type(block) == block_type_heading:
-        h_nr = len(block.split()[0])
-        return HTMLNode(f"<h{h_nr}>", block[h_nr:])
+    h_nr = len(block.split()[0])
+    return HTMLNode(f"<h{h_nr}>", block[h_nr:])
+
+
+def convert_unordered_block(block):
+    ...
+
+
+def convert_ordered_block(block):
+    ...
