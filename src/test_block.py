@@ -1,8 +1,12 @@
 import unittest
+from htmlnode import HTMLNode
 
 from block import (
         block_to_block_type,
+        convert_code_block,
+        convert_quote_block,
         markdown_to_blocks,
+        convert_paragraph_block,
         block_type_paragraph,
         block_type_heading,
         block_type_code,
@@ -88,4 +92,22 @@ This is the same paragraph on a new line
         md = "1. Line 1\n2. Line 2"
         expected = block_type_ordered_list
         result = block_to_block_type(md)
+        self.assertEqual(result, expected)
+
+    def test_convert_paragraph_block(self):
+        md = "I am a paragraph I guess"
+        expected = HTMLNode("<p>", "I am a paragraph I guess")
+        result = convert_paragraph_block(md)
+        self.assertEqual(result, expected)
+
+    def test_convert_quote_block(self):
+        md = ">To be or not to be."
+        expected = HTMLNode("<blockquote>", "To be or not to be.")
+        result = convert_quote_block(md)
+        self.assertEqual(result, expected)
+
+    def test_convert_code_block(self):
+        md = """```print('Hello World')```"""
+        expected = HTMLNode("<code>", "print('Hello World')")
+        result = convert_code_block(md)
         self.assertEqual(result, expected)

@@ -1,5 +1,7 @@
 import re
 
+from htmlnode import HTMLNode
+
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
 block_type_code = "code"
@@ -31,7 +33,7 @@ def block_to_block_type(block):
     quote = True
 
     for line in split:
-        if line[0] != ">":
+        if len(line) == 0 or line[0] != ">":
             quote = False
             break
 
@@ -42,7 +44,7 @@ def block_to_block_type(block):
     ul = True
 
     for line in split:
-        if line[:2] != "* " and line[:2] != "- ":
+        if len(line) == 0 or (line[:2] != "* " and line[:2] != "- "):
             ul = False
             break
 
@@ -51,12 +53,16 @@ def block_to_block_type(block):
 
     # Ordered list
     ol = True
+    seq = []
 
-    seq = [int(line[0]) for line in split]
+    for line in split:
+        if len(line) > 0 and line[0].isdigit():
+            seq.append(int(line[0]))
+        else:
+            ol = False
+            break
 
-    if seq != list(range(1, len(seq) + 1)):
-        ol = False
-    else:
+    if ol and seq == list(range(1, len(seq) + 1)):
         for line in split:
             if line[1:3] != ". ":
                 ul = False
@@ -66,3 +72,15 @@ def block_to_block_type(block):
         return block_type_ordered_list
 
     return block_type_paragraph
+
+def convert_paragraph_block(block):
+    if block_to_block_type(block) == block_type_paragraph:
+        return HTMLNode("<p>", block)
+
+def convert_quote_block(block):
+    if block_to_block_type(block) == block_type_quote:
+        return HTMLNode("<blockquote>", block[1:])
+
+def convert_code_block(block):
+    if block_to_block_type(block) == block_type_code:
+        return HTMLNode("<code>", block[3:-3])
