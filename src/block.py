@@ -1,6 +1,8 @@
 import re
 
-from htmlnode import HTMLNode, ParentNode
+from htmlnode import ParentNode, ParentNode
+from extract import text_to_textnodes
+from textnode import text_node_to_html_node
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
@@ -80,46 +82,50 @@ def markdown_to_html_node(markdown):
     nodes = []
     blocks = markdown_to_blocks(markdown)
     for block in blocks:
-        block_type = block_to_block_type(block)
-
-        if block_type == block_type_paragraph:
-            node = convert_paragraph_block(block)
-
-        if block_type == block_type_quote:
-            node = convert_quote_block(block)
-
-        if block_type == block_type_code:
-            node = convert_code_block(block)
-
-        if block_type == block_type_heading:
-            node = convert_heading_block(block)
-
-        if block_type == block_type_unordered_list:
-            node = convert_unordered_block(block)
-
-        if block_type == block_type_ordered_list:
-            node = convert_ordered_block(block)
-
+        node = block_to_html_node(block)
         nodes.append(node)
 
-    return ParentNode("div", nodes)
+    return ParentNode("div", nodes, None)
 
+def block_to_html_node(block):
+    block_type = block_to_block_type(block)
+    if block_type == block_type_paragraph:
+        return convert_paragraph_block(block)
+
+    if block_type == block_type_quote:
+        return convert_quote_block(block)
+
+    if block_type == block_type_code:
+        return convert_code_block(block)
+
+    if block_type == block_type_heading:
+        return convert_heading_block(block)
+
+    if block_type == block_type_unordered_list:
+        return convert_unordered_block(block)
+
+    if block_type == block_type_ordered_list:
+        return convert_ordered_block(block)
+    raise ValueError("No valid block type")
 
 def convert_paragraph_block(block):
-    return HTMLNode("<p>", block)
+    lines = block.split("\n")
+    paragraph = " ".join(lines)
+    children = text_to_children(paragraph)
+    return ParentNode("p", children)
 
 
 def convert_quote_block(block):
-    return HTMLNode("<blockquote>", block[1:])
+    return ParentNode("blockquote", block[1:])
 
 
 def convert_code_block(block):
-    return HTMLNode("<code>", block[3:-3])
+    return ParentNode("code", block[3:-3])
 
 
 def convert_heading_block(block):
     h_nr = len(block.split()[0])
-    return HTMLNode(f"<h{h_nr}>", block[h_nr:])
+    return ParentNode(f"h{h_nr}", block[h_nr:])
 
 
 def convert_unordered_block(block):
@@ -132,3 +138,11 @@ def convert_unordered_block(block):
 
 def convert_ordered_block(block):
     ...
+
+def text_to_children(text):
+    children = []
+    text_nodes = text_to_textnodes(text)
+    for text_node in text_nodes:
+        html_node = text_node_to_html_node(text_node)
+        children.append(html_node)
+    return children
