@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, ParentNode
 
 from block import (
     block_to_block_type,
@@ -8,6 +8,7 @@ from block import (
     markdown_to_blocks,
     convert_paragraph_block,
     convert_heading_block,
+    markdown_to_html_node,
     block_type_paragraph,
     block_type_heading,
     block_type_code,
@@ -124,4 +125,17 @@ This is the same paragraph on a new line
         md = """## Heading 2"""
         expected = HTMLNode("<h2>", " Heading 2")
         result = convert_heading_block(md)
+        self.assertEqual(result, expected)
+
+    def test_convert_unordered_list_block(self):
+        md = """* This is a list\n* with items"""
+        expected = HTMLNode(
+            "<ul>", "<li>This is a list</li><li>with items</li>")
+        result = convert_heading_block(md)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node(self):
+        md = """Hello HTML!"""
+        expected = ParentNode("div", [HTMLNode("<p>", "Hello HTML!")])
+        result = markdown_to_html_node(md)
         self.assertEqual(result, expected)

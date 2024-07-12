@@ -123,7 +123,11 @@ def convert_heading_block(block):
 
 
 def convert_unordered_block(block):
-    ...
+    items = []
+    lines = block.splitlines()
+    for line in lines:
+        items.append(f"<li>{line[2:]}</li>")
+    return items
 
 
 def convert_ordered_block(block):
