@@ -21,7 +21,7 @@ class HTMLNode:
     def __repr__(self) -> str:
         return f'HTMLNode(tag={self.tag}, value={self.value}, children={self.children}, props={self.props})'
 
-    def __eq__(self, other: HTMLNode, /) -> bool:
+    def __eq__(self, other: object, /) -> bool:
         return (
             self.tag == other.tag
             and self.value == other.value

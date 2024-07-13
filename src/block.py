@@ -1,6 +1,7 @@
 import re
+from types import new_class
 
-from htmlnode import ParentNode, ParentNode
+from htmlnode import HTMLNode, ParentNode
 from extract import text_to_textnodes
 from textnode import text_node_to_html_node
 
@@ -19,21 +20,23 @@ def markdown_to_blocks(markdown):
 
 
 def block_to_block_type(block):
-    # Headings
-    headings_pattern = re.compile(r'^\s*(#{1,6})\s+(.+)$', re.MULTILINE)
-    headings = headings_pattern.findall(block)
+    split = block.split('\n')
 
-    if headings:
+    if (
+        block.startswith("# ")
+        or block.startswith("## ")
+        or block.startswith("### ")
+        or block.startswith("#### ")
+        or block.startswith("##### ")
+        or block.startswith("###### ")
+    ):
         return block_type_heading
 
     # Code
-    split = block.split('```')
-
-    if split[0] == '' and split[-1] == '':
+    if len(split) > 1 and split[0].startswith("```") and split[-1].startswith("```"):
         return block_type_code
 
     # Quote
-    split = block.split('\n')
     quote = True
 
     for line in split:
@@ -116,28 +119,52 @@ def convert_paragraph_block(block):
 
 
 def convert_quote_block(block):
-    return ParentNode("blockquote", block[1:])
+    lines = block.split("\n")
+    new_lines = []
+    for line in lines:
+        if not line.startswith(">"):
+            raise ValueError("Invalid quote block")
+        new_lines.append(line.lstrip(">").strip())
+    content = " ".join(new_lines)
+    children = text_to_children(content)
+    return ParentNode("blockquote", children)
 
 
 def convert_code_block(block):
-    return ParentNode("code", block[3:-3])
+    if not block.startswith("```") or block.endswith("```"):
+        raise ValueError("invalid code block")
+    text = block[4:-3]
+    children = text_to_children(text)
+    code = ParentNode("code", children)
+    return ParentNode("pre", [code])
 
 
 def convert_heading_block(block):
     h_nr = len(block.split()[0])
-    return ParentNode(f"h{h_nr}", block[h_nr:])
+    text = block[h_nr+1:]
+    children = text_to_children(text)
+    return ParentNode(f"h{h_nr}", children)
 
 
 def convert_unordered_block(block):
+    lines = block.split("\n")
     items = []
-    lines = block.splitlines()
     for line in lines:
-        items.append(f"<li>{line[2:]}</li>")
-    return items
+        text = line[2:]
+        children = text_to_children(text)
+        items.append(ParentNode("li", children))
+    return ParentNode("ul", items)
 
 
 def convert_ordered_block(block):
-    ...
+    lines = block.split("\n")
+    items = []
+    for line in lines:
+        text = line[3:]
+        children = text_to_children(text)
+        items.append(ParentNode("li", children))
+    return ParentNode("ol", items)
+
 
 def text_to_children(text):
     children = []
