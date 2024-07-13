@@ -1,7 +1,7 @@
+from shutil import copy
 from textnode import TextNode
+from generate import copy_contents
 
 def main():
-    node = TextNode('this is a text node', 'bold', 'https://www.boot.dev')
-    print(node)
-
+    copy_contents()
 main()
