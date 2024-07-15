@@ -115,6 +115,7 @@ def split_nodes_link(old_nodes):
 
     return new_nodes
 
+
 def text_to_textnodes(text):
     nodes = [TextNode(text, text_type_text)]
     nodes = split_nodes_delimiter(nodes, "**", text_type_bold)
@@ -123,3 +124,10 @@ def text_to_textnodes(text):
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes
+
+
+def extract_title(markdown):
+    title = markdown.split("\n")[0]
+    if not title.startswith("# "):
+        raise ValueError("No valid title found")
+    return title.lstrip("#").strip()

@@ -3,6 +3,7 @@ import unittest
 from extract import (
     extract_markdown_images,
     extract_markdown_links,
+    extract_title,
     split_nodes_delimiter,
     split_nodes_image,
     split_nodes_link,
@@ -205,6 +206,24 @@ class TestInlineMarkdown(unittest.TestCase):
             nodes,
         )
 
+
+    def test_extract_title(self):
+        md = "# Title"
+        expected = "Title"
+        result = extract_title(md)
+        self.assertEqual(expected, result)
+
+
+    def test_extract_title_h1_missing(self):
+        md = "Title"
+        with self.assertRaises(ValueError):
+            extract_title(md)
+
+
+    def test_extract_title_malformed_title(self):
+        md = "#Title"
+        with self.assertRaises(ValueError):
+            extract_title(md)
 
 if __name__ == "__main__":
     unittest.main()
