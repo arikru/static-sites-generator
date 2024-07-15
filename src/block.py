@@ -131,7 +131,7 @@ def convert_quote_block(block):
 
 
 def convert_code_block(block):
-    if not block.startswith("```") or block.endswith("```"):
+    if not block.startswith("```") or not block.endswith("```"):
         raise ValueError("invalid code block")
     text = block[4:-3]
     children = text_to_children(text)
