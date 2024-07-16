@@ -1,6 +1,6 @@
 import os
 import shutil
-from generate import copy_contents, generate_page
+from generate import copy_contents, generate_pages_recursive
 
 def delete_contents(directory):
     # Ensure the directory exists
@@ -22,6 +22,6 @@ def delete_contents(directory):
 def main():
     delete_contents("public")
     copy_contents()
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 
 main()
