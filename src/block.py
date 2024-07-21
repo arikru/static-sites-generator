@@ -1,8 +1,7 @@
 import re
-from types import new_class
 
-from htmlnode import HTMLNode, ParentNode
 from extract import text_to_textnodes
+from htmlnode import ParentNode
 from textnode import text_node_to_html_node
 
 block_type_paragraph = "paragraph"
