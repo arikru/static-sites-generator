@@ -17,7 +17,7 @@ Static Site Generator (SSG) is a Python-based tool designed to simplify the crea
 1. **Installation**: Fork and clone the repository.
    ```bash
    git clone https://github.com/yourusername/static-sites-generator.git
-   cd ssg
+   cd static-sites-generator
    ```
 
 2. **Usage**: Simply run the main.sh script with your Markdown files in the `content` folder.
