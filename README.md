@@ -25,4 +25,4 @@ Static Site Generator (SSG) is a Python-based tool designed to simplify the crea
    ./main.sh
    ```
 
-3. **Serve**: Use any web server to serve the generated HTML files (running the main script automatically starts a local server that previews the created HTML files).
+3. **Serve**: Use any web server to serve the generated HTML files (running the main script automatically starts a local server defined in `server.py` that previews the created HTML files).
